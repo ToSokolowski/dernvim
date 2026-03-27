@@ -22,6 +22,14 @@
           xclip # For clipboard support
           lua-language-server
           nil # Nix LSP
+          tree-sitter
+          metals
+          
+          pyright             # Python
+          rust-analyzer       # Rust
+          haskell-language-server # Haskell
+          metals              # Scala
+          bloop
         ];
 
         # Wrap Neovim with the init.lua and dependencies
