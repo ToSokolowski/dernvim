@@ -30,7 +30,7 @@
         metals
         luarocks
 
-        pyright # Python
+        basedpyright # Python
         rust-analyzer # Rust
         haskell-language-server # Haskell
         metals # Scala
