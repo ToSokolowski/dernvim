@@ -534,12 +534,15 @@ require('lazy').setup({
 
         -- Scala
         metals = {},
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`ts_ls`) will work just fine
-        -- ts_ls = {},
+
+        -- TYPST
+        tinymist = {
+          settings = {
+            formatterMode = 'typstyle',
+            exportPdf = 'onType',
+            semanticTokens = 'disable',
+          },
+        },
 
         stylua = {}, -- Used to format Lua code
 
@@ -768,6 +771,13 @@ require('lazy').setup({
     end,
   },
 
+  {
+    'chomosuke/typst-preview.nvim',
+    ft = 'typst', -- Lazy load only on typst files
+    version = '1.*',
+    opts = {}, -- implicitly calls `setup {}`
+  },
+
   -- Oil.nvim: Edit your file system like a normal buffer
   {
     'stevearc/oil.nvim',
@@ -945,6 +955,14 @@ require('lazy').setup({
     },
   },
 })
+
+vim.api.nvim_create_user_command('OpenPdf', function()
+  local filepath = vim.api.nvim_buf_get_name(0)
+  if filepath:match '%.typ$' then
+    local pdf_path = filepath:gsub('%.typ$', '.pdf')
+    vim.system { 'zathura', pdf_path }
+  end
+end, {})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

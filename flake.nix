@@ -35,6 +35,9 @@
         haskell-language-server # Haskell
         metals # Scala
         bloop
+        tinymist # Typst
+
+        zathura # for lifepreview to work, we install this wonderful pdf viewer
 
         stylua # Lua
         isort # Python (Sorts imports)
