@@ -36,6 +36,7 @@
         metals # Scala
         bloop
         tinymist # Typst
+        ltex-ls-plus
 
         zathura # for lifepreview to work, we install this wonderful pdf viewer
 

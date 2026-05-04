@@ -535,6 +535,24 @@ require('lazy').setup({
         -- Scala
         metals = {},
 
+        -- Grammar Checking
+
+        ltex = { -- Keep the name 'ltex' for lspconfig compatibility
+          filetypes = { 'typst', 'markdown', 'tex', 'gitcommit' },
+          settings = {
+            ltex = {
+              language = 'en-US',
+              -- ltex-ls-plus specific: better handling of external rules
+              additionalRules = {
+                enablePickyRules = true,
+                motherTongue = 'en-US',
+              },
+              -- Improved Typst integration
+              enabled = { 'typst', 'latex', 'markdown' },
+            },
+          },
+        },
+
         -- TYPST
         tinymist = {
           settings = {
