@@ -35,6 +35,7 @@
         haskell-language-server # Haskell
         metals # Scala
         bloop
+        jdk25 # metals dependency
         tinymist # Typst
         ltex-ls-plus
 

@@ -532,22 +532,16 @@ require('lazy').setup({
           filetypes = { 'haskell', 'lhaskell', 'cabal' },
         },
 
-        -- Scala
-        metals = {},
-
         -- Grammar Checking
-
         ltex = { -- Keep the name 'ltex' for lspconfig compatibility
           filetypes = { 'typst', 'markdown', 'tex', 'gitcommit' },
           settings = {
             ltex = {
               language = 'en-US',
-              -- ltex-ls-plus specific: better handling of external rules
               additionalRules = {
                 enablePickyRules = true,
                 motherTongue = 'en-US',
               },
-              -- Improved Typst integration
               enabled = { 'typst', 'latex', 'markdown' },
             },
           },
@@ -926,6 +920,35 @@ require('lazy').setup({
       }
     end,
   },
+
+  {
+    'scalameta/nvim-metals',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'mfussenegger/nvim-dap',
+    },
+    ft = { 'scala', 'sbt', 'java' },
+    opts = function()
+      local metals_config = require('metals').bare_config()
+
+      -- Integration with blink.cmp
+      metals_config.capabilities = require('blink.cmp').get_lsp_capabilities()
+
+      metals_config.on_attach = function(client, bufnr)
+        require('metals').setup_dap() -- Enables debugging support
+      end
+
+      return metals_config
+    end,
+    config = function(self, metals_config)
+      local nvim_metals_group = vim.api.nvim_create_augroup('nvim-metals', { clear = true })
+      vim.api.nvim_create_autocmd('FileType', {
+        pattern = { 'scala', 'sbt', 'java' },
+        callback = function() require('metals').initialize_or_attach(metals_config) end,
+        group = nvim_metals_group,
+      })
+    end,
+  },
   -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
@@ -981,6 +1004,22 @@ vim.api.nvim_create_user_command('OpenPdf', function()
     vim.system { 'zathura', pdf_path }
   end
 end, {})
+
+-- Disable netrw (the default Neovim file explorer)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- Open Oil when launching Neovim with a directory (e.g., `nvim .`)
+vim.api.nvim_create_autocmd('VimEnter', {
+  callback = function()
+    -- Check if a directory was passed as argument
+    if vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
+      vim.cmd 'Oil'
+      -- Clear the argument so it doesn't show as a buffer
+      vim.cmd 'argdelete'
+    end
+  end,
+})
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
