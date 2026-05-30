@@ -1,3 +1,6 @@
+-- DISABLE NETRW
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -798,6 +801,7 @@ require('lazy').setup({
     keys = {
       { '-', '<CMD>Oil<CR>', desc = 'Open parent directory' },
     },
+    default_file_explorer = true,
   },
 
   -- Flash.nvim: Jump to any character on screen instantly
@@ -1005,18 +1009,13 @@ vim.api.nvim_create_user_command('OpenPdf', function()
   end
 end, {})
 
--- Disable netrw (the default Neovim file explorer)
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
--- Open Oil when launching Neovim with a directory (e.g., `nvim .`)
+-- OPEN OIL ON OPENING A DIR
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
-    -- Check if a directory was passed as argument
     if vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1 then
-      vim.cmd 'Oil'
-      -- Clear the argument so it doesn't show as a buffer
-      vim.cmd 'argdelete'
+      local dir = vim.fn.argv(0)
+      require('oil').open(dir)
+      pcall(function() vim.cmd 'argdelete *' end)
     end
   end,
 })
