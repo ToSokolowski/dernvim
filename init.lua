@@ -781,8 +781,12 @@ require('lazy').setup({
         dim_inactive = false,
         transparent_mode = false,
       }
-      -- Set the colorscheme here
+      -- Set the colorscheme here; gruvbox follows 'background' for its light/dark variant
+      vim.o.background = 'light'
       vim.cmd 'colorscheme gruvbox'
+
+      -- Toggle between light and dark mode
+      vim.keymap.set('n', '<leader>tb', function() vim.o.background = vim.o.background == 'light' and 'dark' or 'light' end, { desc = '[T]oggle [B]ackground light/dark' })
     end,
   },
 
