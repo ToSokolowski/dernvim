@@ -781,12 +781,18 @@ require('lazy').setup({
         dim_inactive = false,
         transparent_mode = false,
       }
-      -- Set the colorscheme here; gruvbox follows 'background' for its light/dark variant
-      vim.o.background = 'light'
+      -- Gruvbox follows 'background' for its light/dark variant. Remember the
+      -- last selection across sessions, falling back to dark on first use.
+      local background_state_file = vim.fn.stdpath 'state' .. '/background'
+      local saved_background = vim.fn.filereadable(background_state_file) == 1 and vim.fn.readfile(background_state_file)[1] or nil
+      vim.o.background = saved_background == 'light' and 'light' or 'dark'
       vim.cmd 'colorscheme gruvbox'
 
       -- Toggle between light and dark mode
-      vim.keymap.set('n', '<leader>tb', function() vim.o.background = vim.o.background == 'light' and 'dark' or 'light' end, { desc = '[T]oggle [B]ackground light/dark' })
+      vim.keymap.set('n', '<leader>tB', function()
+        vim.o.background = vim.o.background == 'light' and 'dark' or 'light'
+        vim.fn.writefile({ vim.o.background }, background_state_file)
+      end, { desc = '[T]oggle [B]ackground light/dark' })
     end,
   },
 
