@@ -27,7 +27,6 @@
         nil # Nix LSP
         tree-sitter
         nodejs
-        metals
         luarocks
 
         basedpyright # Python
@@ -62,6 +61,9 @@
         };
       };
     in {
+      # Allow Metals to be installed independently into a user or system profile.
+      packages.metals = pkgs.metals;
+
       packages.default = pkgs.symlinkJoin {
         name = "nvim";
         paths = [kickstart-nvim];
