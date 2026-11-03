@@ -16,6 +16,7 @@
 
       # Define external dependencies required by kickstart.nvim
       runtimeDeps = with pkgs; [
+        git # vim.pack clones and updates plugins
         gcc
         gnumake
         unzip
@@ -29,12 +30,22 @@
         nodejs
         luarocks
 
+        clojure # JVM Clojure CLI
+        babashka # bb, including its built-in nREPL server
+        clojure-lsp # Clojure/Babashka completion, diagnostics and formatting
+        luaPackages.fennel # Standalone Fennel REPL for Conjure
+
         basedpyright # Python
         rust-analyzer # Rust
         haskell-language-server # Haskell
         metals # Scala
         bloop
-        jdk25 # metals dependency
+        jdk25 # metals and jdtls runtime
+        jdt-language-server # Java (jdtls)
+        ant # Java build tools, for the Neovim terminal
+        gradle
+        maven
+        leiningen # Clojure (project.clj); clojure-lsp uses it for the classpath
         tinymist # Typst
         ltex-ls-plus
 
@@ -56,6 +67,7 @@
       kickstart-nvim = pkgs.neovim.override {
         configure = {
           customRC = ''
+            lua vim.opt.rtp:prepend('${self}')
             luafile ${./init.lua}
           '';
         };
@@ -70,7 +82,10 @@
         buildInputs = [pkgs.makeWrapper];
         postBuild = ''
           wrapProgram $out/bin/nvim \
-          --prefix PATH : ${pkgs.lib.makeBinPath runtimeDeps}
+          --prefix PATH : ${pkgs.lib.makeBinPath runtimeDeps} \
+          --set DERNVIM_JDK17 ${pkgs.jdk17}/lib/openjdk \
+          --set DERNVIM_JAVA_DEBUG ${pkgs.vscode-extensions.vscjava.vscode-java-debug}/share/vscode/extensions/vscjava.vscode-java-debug/server \
+          --set DERNVIM_JAVA_TEST ${pkgs.vscode-extensions.vscjava.vscode-java-test}/share/vscode/extensions/vscjava.vscode-java-test/server
         '';
       };
 
