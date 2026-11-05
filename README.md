@@ -43,6 +43,12 @@ Babashka connect over nREPL; plain Fennel uses a separate REPL over stdio.
 Clojure LSP provides completion, diagnostics, navigation, refactoring and
 formatting independently of the REPL (including `.bb` scripts).
 
+Conjure loads directly from `~/dev/conjure-cider` when that directory exists,
+so local changes are used without a plugin update. Otherwise, `vim.pack`
+installs the private `ToSokolowski/conjure-cider` fork over SSH; your SSH key
+must have access to that GitHub repository. Restart Neovim after switching
+between the local checkout and the remote plugin.
+
 The wrapped editor includes `clojure`, `bb`, `clojure-lsp` and `fennel`. Run
 `nix run .` to use it, then let `vim.pack` install the plugins on first launch. These executables are on the editor's PATH, not automatically your
 shell's PATH. Use `:terminal` for the commands below, or install the runtimes
