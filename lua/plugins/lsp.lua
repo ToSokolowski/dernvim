@@ -53,6 +53,17 @@ local servers = {
   basedpyright = {},
   clojure_lsp = {},
 
+  -- YAML: schema comments in each file select the schema, including local files.
+  yamlls = {
+    settings = {
+      yaml = {
+        validate = true,
+        completion = true,
+        hover = true,
+      },
+    },
+  },
+
   -- Rust
   rust_analyzer = {
     settings = {

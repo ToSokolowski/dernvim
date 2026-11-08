@@ -15,6 +15,7 @@ require 'plugins.format'
 require 'plugins.treesitter'
 require 'plugins.ai'
 require 'plugins.debug'
+require 'plugins.obsidian'
 
 require 'lang.clojure'
 require 'lang.scala'

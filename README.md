@@ -21,7 +21,7 @@ eagerly, with dependencies loaded before configuration.
 init.lua              leader, then requires the modules below
 lua/config/           options, global keymaps, autocmds (incl. plugin build hooks)
 lua/plugins/init.lua  load order of the plugin modules
-lua/plugins/*.lua     ui, editor, git, telescope, completion, lsp, format, treesitter
+lua/plugins/*.lua     ui, editor, git, telescope, completion, lsp, format, treesitter, obsidian
 lua/lang/*.lua        clojure (Conjure), scala (Metals), typst (preview, :OpenPdf)
 ```
 
@@ -141,3 +141,40 @@ For a declarative NixOS or Home Manager configuration, add
 `dernvim.packages.${pkgs.stdenv.hostPlatform.system}.metals` to
 `environment.systemPackages` or `home.packages`, respectively, where `dernvim`
 is this flake's input. This uses the same pinned Metals package as Neovim.
+
+## YAML schema validation
+
+The Nix package includes `yaml-language-server`, enabled in Neovim as `yamlls`.
+It provides schema validation, completion, and hover documentation.
+
+Select a schema with a comment at the top of a YAML file. Relative paths are
+resolved from that file, for example in `~/dev/weimar/data/events.yaml`:
+
+```yaml
+# yaml-language-server: $schema=../schemas/events.schema.yaml
+```
+
+The Weimar data files already contain these comments, so no project-specific
+editor configuration is needed. Rebuild your Nix package (or use `nix run .`)
+and reopen Neovim after changing this configuration. If running Neovim outside
+the Nix wrapper, install `yaml-language-server` separately and put it on `PATH`.
+
+Use `:checkhealth vim.lsp` to check that `yamlls` is attached to a YAML buffer.
+Schema errors appear inline; `<leader>q` lists buffer diagnostics.
+
+## Obsidian vaults
+
+`lua/plugins/obsidian.lua` sets up obsidian.nvim and render-markdown.nvim for
+editing Obsidian vaults without the app: follow `[[wikilinks]]` with `gf`/`<CR>`,
+link and tag completion, backlinks, daily notes and search. Vaults are listed in
+`workspaces`; the one containing the current file is used.
+
+| Keys         | Action                         |
+| ------------ | ------------------------------ |
+| `<leader>on` | New note                       |
+| `<leader>os` | Search notes                   |
+| `<leader>oq` | Quick switch                   |
+| `<leader>ob` | Backlinks                      |
+| `<leader>ot` | Tags                           |
+| `<leader>od` | Today's daily note (`daily/`)  |
+| `<leader>ow` | Switch vault                   |

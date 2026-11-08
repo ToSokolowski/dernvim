@@ -36,6 +36,7 @@
         luaPackages.fennel # Standalone Fennel REPL for Conjure
 
         basedpyright # Python
+        yaml-language-server # YAML schema validation and completion
         rust-analyzer # Rust
         haskell-language-server # Haskell
         metals # Scala
