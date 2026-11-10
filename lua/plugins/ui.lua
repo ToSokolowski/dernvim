@@ -80,3 +80,40 @@ do
   vim.pack.add { 'https://github.com/j-hui/fidget.nvim' }
   require('fidget').setup {}
 end
+
+-- Inline images (mermaid diagrams, math, image links) via snacks.image.
+-- Off by default; <leader>tm toggles rendering in the current buffer.
+-- Needs a Kitty-graphics terminal (kitty, ghostty, wezterm); mmdc and magick come from the flake.
+do
+  vim.pack.add { 'https://github.com/folke/snacks.nvim' }
+  require('snacks').setup {
+    -- inline/float off: buffers aren't rendered until toggled on
+    image = { doc = { inline = false, float = false } },
+  }
+
+  local rendered = {} ---@type table<integer, snacks.image.inline>
+  local function stop(buf)
+    local r = rendered[buf]
+    if not r then return end
+    -- snacks has no detach for inline rendering; silence the buffer hooks it installed
+    r.update = function() end
+    r.conceal = function() end
+    pcall(vim.api.nvim_del_augroup_by_name, 'snacks.image.inline.' .. buf)
+    Snacks.image.placement.clean(buf)
+    rendered[buf] = nil
+  end
+
+  vim.keymap.set('n', '<leader>tm', function()
+    local buf = vim.api.nvim_get_current_buf()
+    if rendered[buf] then return stop(buf) end
+    if not Snacks.image.terminal.env().placeholders then
+      return vim.notify('Inline images need a terminal with Kitty graphics placeholders', vim.log.levels.WARN)
+    end
+    rendered[buf] = Snacks.image.inline.new(buf)
+  end, { desc = '[T]oggle inline [M]ermaid/images' })
+
+  vim.api.nvim_create_autocmd('BufWipeout', {
+    group = vim.api.nvim_create_augroup('dernvim-image-toggle', { clear = true }),
+    callback = function(ev) rendered[ev.buf] = nil end,
+  })
+end

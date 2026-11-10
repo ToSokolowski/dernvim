@@ -62,6 +62,9 @@
         rustfmt # Rust
         just # Just (Used as a formatter here)
         taplo # TOML (Note: the package/binary is often 'taplo', not 'tombi')
+
+        mermaid-cli # mmdc: renders mermaid blocks for snacks.image
+        imagemagick # magick: image conversion/identification for snacks.image
       ];
 
       # Wrap Neovim with the init.lua and dependencies

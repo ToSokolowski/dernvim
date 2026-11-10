@@ -6,7 +6,7 @@
 do
   vim.pack.add { 'https://github.com/coder/claudecode.nvim' }
   require('claudecode').setup {
-    -- Built-in terminal split; snacks.nvim isn't part of this config.
+    -- Built-in terminal split (snacks is only used for images here).
     terminal = { provider = 'native' },
   }
 
